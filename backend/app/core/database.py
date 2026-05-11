@@ -1,7 +1,8 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import declarative_base, sessionmaker
+# from app.core.config import settings
 
-DATABASE_URL = "postgresql://postgres:postgres@db:5432/realestate"
+DATABASE_URL = "postgresql+psycopg2://postgres:postgres@database:5432/realestate"
 
 engine = create_engine(DATABASE_URL)
 

@@ -20,17 +20,17 @@ if config.config_file_name is not None:
 # target_metadata = mymodel.Base.metadata
 
 from app.core.database import Base
+from app.modules.tenants.models import Tenant
+from app.modules.users.models import User
 from app.modules.apiKeys.models import ApiKey
 from app.modules.clients.models import Client
 from app.modules.leads.models import Lead 
 from app.modules.properties.models import Property
 from app.modules.propertyOwners.models import PropertyOwner
 from app.modules.roles.models import Role
-from app.modules.roles.models import RolePermission
-from app.modules.roles.models import Permission
-from app.modules.tenants.models import Tenant
-from app.modules.users.models import User
 from app.modules.users.models import UserRole
+from app.modules.roles.models import Permission
+from app.modules.roles.models import RolePermission
 from app.modules.webhooks.models import Webhook
 
 # from app.modules.tenants.models import Tenant

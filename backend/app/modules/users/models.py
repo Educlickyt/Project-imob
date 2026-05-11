@@ -21,6 +21,9 @@ class User(Base):
         ForeignKey("tenants.id"),
         nullable=False
     )
+    # tenant_id: Mapped[uuid.UUID] = mapped_column(
+    #     nullable=True
+    # )
 
     name: Mapped[str] = mapped_column(String, nullable=False)
 
@@ -56,6 +59,8 @@ class User(Base):
         DateTime(timezone=True),
         nullable=True
     )
+    
+    
     
 class UserRole(Base):
     __tablename__ = "user_roles"
