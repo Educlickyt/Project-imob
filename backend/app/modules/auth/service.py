@@ -6,6 +6,7 @@ class AuthService:
     def __init__(self, db):
         self.user_repo = UserRepository(db)
     
+
     def register_user(self, user_in):
         
         user_exists = self.user_repo.get_by_email(user_in.email)
