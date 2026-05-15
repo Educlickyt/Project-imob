@@ -1,5 +1,5 @@
 .header{
-    background-color: #F0F3F9;
+    background-color: var(--accent-bg);
     padding: 0 105px;
     width: calc(100vw - (105px*2));
     height: 85px;
@@ -7,8 +7,13 @@
     align-items: end;
     justify-content: space-between;
 }
-.header>img{
-    width: 175px;
+.header>.logo{
+    width: 180px;
+    height: 80px;
+    background-image: var(--logo);
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position-y: bottom;
 }
 .header>nav{
     /* background-color: blueviolet; */
@@ -26,10 +31,10 @@
     font-weight: 300;
     display: flex;
     align-items: end;
-    color: rgb(17, 17, 17);
+    color: var(--text-h);
 }
 .header>nav button{
-    background-color: #BD0D24;
+    background-color: var(--accent);
     border: none;
     padding: 15px 10px;
     height: 50px;

@@ -1,26 +1,82 @@
 from fastapi import HTTPException, status
 from app.modules.users.repository import UserRepository
+from app.modules.tenants.repository import TenantRepository
+from app.modules.auth.schemas import RegisterRequest, UserResponse, TenantResponse
+from app.core.security import create_access_token, verify_password
+from datetime import timedelta
 
 class AuthService:
-    
+     
     def __init__(self, db):
         self.user_repo = UserRepository(db)
-    
-
-    def register_user(self, user_in):
-        
+        self.tenant_repo = TenantRepository(db)
+ 
+    def register_tenant_with_admin(self, user_in: RegisterRequest):
         user_exists = self.user_repo.get_by_email(user_in.email)
-        
-        # return user_exists
-        
-        
+         
         if user_exists:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail="Esse email já está cadastrado."
             )
+          
+        tenant_slug = user_in.tenant_slug
+        if not tenant_slug:
+            tenant_slug = self._generate_slug(user_in.tenant_name)
+            
+        tenant_exists = self.tenant_repo.get_by_slug(tenant_slug)
+        if tenant_exists:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Este slug de tenant já está em uso."
+            )
         
-        return self.user_repo.create(user_in.model_dump())
-
+        tenant_data = {
+            "name": user_in.tenant_name,
+            "slug": tenant_slug,
+            "plan": "free",
+            "status": "active"
+        }
+        db_tenant = self.tenant_repo.create(tenant_data)
+        
+        user_data = user_in.model_dump()
+        user_data.pop('tenant_name', None)
+        user_data.pop('tenant_slug', None)
+        user_data['tenant_id'] = db_tenant.id
+        
+        db_user = self.user_repo.create(user_data)
+        
+        access_token_expires = timedelta(minutes=30)
+        access_token = create_access_token(
+            data={"sub": str(db_user.id), "tenant_id": str(db_tenant.id)},
+            expires_delta=access_token_expires
+        )
+        
+        return {
+            "user": UserResponse.model_validate(db_user),
+            "tenant": TenantResponse.model_validate(db_tenant),
+            "access_token": access_token,
+            "token_type": "bearer"
+        }
     
-    
+    def _generate_slug(self, name: str) -> str:
+        import re
+        slug = name.lower()
+        slug = re.sub(r'[áàâãäå]', 'a', slug)
+        slug = re.sub(r'[éèêë]', 'e', slug)
+        slug = re.sub(r'[íìîï]', 'i', slug)
+        slug = re.sub(r'[óòôõö]', 'o', slug)
+        slug = re.sub(r'[úùûü]', 'u', slug)
+        slug = re.sub(r'[ç]', 'c', slug)
+        slug = re.sub(r'[ñ]', 'n', slug)
+        slug = re.sub(r'[^a-z0-9]+', '-', slug)
+        slug = slug.strip('-')
+        return slug
+        
+    def authenticate_user(self, email: str, password: str):
+        user = self.user_repo.get_by_email(email)
+        if not user:
+            return False
+        if not verify_password(password, user.password_hash):
+            return False
+        return user

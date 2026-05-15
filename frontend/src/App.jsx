@@ -1,5 +1,8 @@
 import { useEffect, useState } from 'react'
+import { BrowserRouter } from "react-router-dom"
 import './App.css'
+
+import LandingPage from './pages/LandingPage'
 
 function App() {
 
@@ -12,12 +15,9 @@ function App() {
   }, []);
 
   return (
-    <>
-      <h1>{message}</h1>
-    
+    <>   
       <BrowserRouter>
-        <Header/>
-        <HeroBanner/>
+        <LandingPage/>
       </BrowserRouter>
     
     </>

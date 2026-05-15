@@ -5,6 +5,7 @@ import app.modules.models
 app = FastAPI()
 
 from app.modules.auth.router import router as auth_router
+from app.modules.users.router import router as users_router
 
 
 app.add_middleware(
@@ -16,6 +17,7 @@ app.add_middleware(
 )
 
 app.include_router(auth_router)
+app.include_router(users_router)
 
 @app.get("/")
 def root():

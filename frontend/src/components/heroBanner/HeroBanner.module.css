@@ -1,5 +1,5 @@
 .heroBanner{
-    background-color: #F0F3F9;
+    background-color: var(--accent-bg);
     height: 595px;
     padding: 0px 105px;
     display: flex;
@@ -25,7 +25,7 @@
 .heroBanner>div p{
     font-weight: 300;
     font-size: 22px;
-    color: rgb(73, 73, 73);
+    color: var(--text);
     line-height: 30px;
 }
 
@@ -38,16 +38,16 @@
 .heroBanner>div>div button{
     padding: 8px 15px;
     cursor: pointer;
-    border: solid black 1px;
+    border: solid var(--text-h) 1px;
     border-radius: 5px;
-    background-color: white;
+    background-color: var(--bg);
 }
 .heroBanner>div>div a{
     text-decoration: none;
 }
 .heroBanner>div div button:last-child{
-    background-color: #BD0D24;
+    background-color: var(--accent);
     color: #F0F3F9;
-    border: solid #BD0D24 1px;  
+    border: solid var(--accent) 1px;  
 }
 
