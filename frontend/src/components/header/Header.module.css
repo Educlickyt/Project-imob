@@ -43,4 +43,13 @@
     font-weight: 300;
     color: aliceblue;
     cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.header>nav button:hover{
+    background-color: #9b0a1d;
+}
+
+.logoutButton{
+    background-color: var(--text-h) !important;
 }

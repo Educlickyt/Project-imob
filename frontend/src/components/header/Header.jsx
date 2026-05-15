@@ -1,8 +1,8 @@
-import React from 'react'
-import Style from './Header.module.css'
-import {Link} from 'react-router-dom'
+import React from 'react';
+import Style from './Header.module.css';
+import { Link } from 'react-router-dom';
 
-const Header = () => {
+const Header = ({ onLoginClick }) => {
   return (
     <header className={Style.header}>
       <Link to='/' className={Style.logo}></Link>
@@ -12,10 +12,10 @@ const Header = () => {
           <Link to="/contact">Contato</Link>
           <Link to="/blog">Blog</Link>
         </div>
-        <Link to="/login"><button>Entrar</button></Link>    
+        <button onClick={onLoginClick}>Entrar</button>
       </nav>
     </header>
-  )
-}
+  );
+};
 
-export default Header
+export default Header;

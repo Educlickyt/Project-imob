@@ -1,6 +1,6 @@
 .heroBanner{
     background-color: var(--accent-bg);
-    height: 595px;
+    min-height: 595px;
     padding: 0px 105px;
     display: flex;
     justify-content: space-between;

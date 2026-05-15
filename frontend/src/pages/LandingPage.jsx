@@ -1,17 +1,14 @@
 import React from 'react'
 import Header from '../components/header/Header'
 import HeroBanner from '../components/heroBanner/HeroBanner'
-import CardLogin from '../components/cardLogin/CardLogin'
 
-
-const LandingPage = () => {
+const LandingPage = ({ onLoginClick }) => {
   return (
     <>
-        <Header/>
+        <Header onLoginClick={onLoginClick} />
         <HeroBanner/>
-        <CardLogin/>
     </>
   )
 }
 
-export default LandingPage
+export default LandingPage;
