@@ -4,29 +4,20 @@ import './App.css'
 
 import LandingPage from './pages/LandingPage'
 import Dashboard from './pages/Dashboard'
-import LoginModal from './components/loginModal/LoginModal'
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [showLoginModal, setShowLoginModal] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const token = localStorage.getItem('access_token');
     if (token) {
       setIsAuthenticated(true);
     }
+    setIsLoading(false);
   }, []);
 
-  const handleOpenLogin = () => {
-    setShowLoginModal(true);
-  };
-
-  const handleCloseLogin = () => {
-    setShowLoginModal(false);
-  };
-
-  const handleLoginSuccess = () => {
-    setShowLoginModal(false);
+  const handleAuthSuccess = () => {
     setIsAuthenticated(true);
   };
 
@@ -36,14 +27,12 @@ function App() {
     setIsAuthenticated(false);
   };
 
+  if (isLoading) {
+    return null;
+  }
+
   return (
     <BrowserRouter>
-      <LoginModal 
-        isOpen={showLoginModal} 
-        onClose={handleCloseLogin} 
-        onLoginSuccess={handleLoginSuccess} 
-      />
-      
       <Routes>
         {isAuthenticated ? (
           <>
@@ -53,8 +42,8 @@ function App() {
           </>
         ) : (
           <>
-            <Route path="/" element={<LandingPage onLoginClick={handleOpenLogin} />} />
-            <Route path="*" element={<LandingPage onLoginClick={handleOpenLogin} />} />
+            <Route path="/" element={<LandingPage onAuthSuccess={handleAuthSuccess} />} />
+            <Route path="*" element={<LandingPage onAuthSuccess={handleAuthSuccess} />} />
           </>
         )}
       </Routes>

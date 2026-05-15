@@ -3,13 +3,14 @@ import api from '../../services/api';
 import { useNavigate } from 'react-router-dom';
 import styles from './LoginModal.module.css';
 
-const LoginModal = ({ isOpen, onClose, onLoginSuccess }) => {
+const LoginModal = ({ isOpen, onClose, onLoginSuccess, onSwitchToRegister }) => {
   if (!isOpen) return null;
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -25,9 +26,13 @@ const LoginModal = ({ isOpen, onClose, onLoginSuccess }) => {
       localStorage.setItem('access_token', response.data.access_token);
       localStorage.setItem('token_type', response.data.token_type);
 
-      if (onLoginSuccess) {
-        onLoginSuccess();
-      }
+      setSuccess('Login realizado com sucesso!');
+      
+      setTimeout(() => {
+        if (onLoginSuccess) {
+          onLoginSuccess();
+        }
+      }, 1000);
     } catch (err) {
       setLoading(false);
       if (err.response && err.response.data) {
@@ -49,6 +54,7 @@ const LoginModal = ({ isOpen, onClose, onLoginSuccess }) => {
         </div>
         
         {error && <div className={styles.errorMessage}>{error}</div>}
+        {success && <div className={styles.successMessage}>{success}</div>}
         
         <form onSubmit={handleSubmit}>
           <div className={styles.formGroup}>
@@ -88,6 +94,13 @@ const LoginModal = ({ isOpen, onClose, onLoginSuccess }) => {
           >
             {loading ? 'Entrando...' : 'Entrar'}
           </button>
+
+          <div className={styles.switchMode}>
+            <span>Não tem conta? </span>
+            <button type="button" onClick={onSwitchToRegister} className={styles.switchButton}>
+              Cadastrar
+            </button>
+          </div>
         </form>
       </div>
     </div>

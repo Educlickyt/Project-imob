@@ -143,6 +143,40 @@
     font-size: 14px;
 }
 
+.successMessage {
+    background-color: #d4edda;
+    color: #155724;
+    padding: 12px;
+    border-radius: 5px;
+    margin-bottom: 20px;
+    text-align: center;
+    font-size: 14px;
+}
+
+/* Switch Mode (Login/Register) */
+.switchMode {
+    margin-top: 20px;
+    text-align: center;
+    font-size: 14px;
+    color: var(--text);
+}
+
+.switchButton {
+    background: none;
+    border: none;
+    color: var(--accent);
+    font-weight: 600;
+    cursor: pointer;
+    font-size: 14px;
+    padding: 0;
+    margin-left: 5px;
+    text-decoration: underline;
+}
+
+.switchButton:hover {
+    color: #9b0a1d;
+}
+
 /* Responsive */
 @media (max-width: 480px) {
     .modalContent {
