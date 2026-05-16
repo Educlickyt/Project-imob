@@ -21,9 +21,6 @@ class User(Base):
         ForeignKey("tenants.id"),
         nullable=False
     )
-    # tenant_id: Mapped[uuid.UUID] = mapped_column(
-    #     nullable=True
-    # )
 
     name: Mapped[str] = mapped_column(String, nullable=False)
 

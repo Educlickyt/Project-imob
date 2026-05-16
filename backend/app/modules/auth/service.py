@@ -11,7 +11,7 @@ class AuthService:
         self.user_repo = UserRepository(db)
         self.tenant_repo = TenantRepository(db)
  
-    def register_tenant_with_admin(self, user_in: RegisterRequest):
+    def register_tenant(self, user_in: RegisterRequest):
         user_exists = self.user_repo.get_by_email(user_in.email)
          
         if user_exists:
@@ -46,10 +46,13 @@ class AuthService:
         
         db_user = self.user_repo.create(user_data)
         
-        access_token_expires = timedelta(minutes=30)
         access_token = create_access_token(
-            data={"sub": str(db_user.id), "tenant_id": str(db_tenant.id)},
-            expires_delta=access_token_expires
+            data={
+                    "sub": str(db_user.id),
+                    "tenant_id": str(db_tenant.id),
+                    # "roles": list(),
+                    # "permissions": list()
+                  }
         )
         
         return {
@@ -75,8 +78,40 @@ class AuthService:
         
     def authenticate_user(self, email: str, password: str):
         user = self.user_repo.get_by_email(email)
-        if not user:
-            return False
-        if not verify_password(password, user.password_hash):
-            return False
-        return user
+        
+        if not user or not verify_password(password, user.password_hash):
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Email ou senha incorretos",
+                headers={"WWW-Authenticate": "Bearer"},
+            )
+            
+        if not user.is_active:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Seu acesso foi bloqueada",
+                headers={"WWW-Authenticate": "Bearer"},
+            )
+        
+        tenant = self.tenant_repo.get_by_id(user.tenant_id)
+        if tenant.status != 'active':
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Essa conta está suspensa",
+                headers={"WWW-Authenticate": "Bearer"},
+            )
+       
+        roles = self.user_repo.get_user_roles(user.id)
+        permissions = self.user_repo.get_user_permissions_keys(user.id)
+        
+        access_token = create_access_token(
+            data={
+                "sub": str(user.id),
+                "tenant_id": str(user.tenant_id),
+                "roles": roles,
+                "permissions": permissions
+            }
+        )
+        
+        return {"access_token": access_token, "token_type": "bearer"}
+        

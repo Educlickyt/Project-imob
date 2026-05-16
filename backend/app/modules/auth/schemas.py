@@ -1,13 +1,17 @@
 from pydantic import BaseModel, EmailStr, Field
 from uuid import UUID
+from typing import List
 
 class Token(BaseModel):
     access_token: str
     token_type: str = "bearer"
 
 class TokenPayload(BaseModel):
-    sub: str = None  # user_id
-    exp: int = None
+    sub: UUID
+    tenant_id: UUID
+    roles: List[str]
+    permissions: List[str]
+    exp: int
 
 class LoginRequest(BaseModel):
     email: EmailStr

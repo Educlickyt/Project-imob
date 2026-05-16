@@ -36,14 +36,15 @@ function App() {
       <Routes>
         {isAuthenticated ? (
           <>
-            <Route path="/dashboard" element={<Dashboard onLogout={handleLogout} />} />
             <Route path="/" element={<Navigate to="/dashboard" replace />} />
+            <Route path="/dashboard" element={<Dashboard onLogout={handleLogout} />} />
             <Route path="*" element={<Navigate to="/dashboard" replace />} />
           </>
         ) : (
           <>
             <Route path="/" element={<LandingPage onAuthSuccess={handleAuthSuccess} />} />
-            <Route path="*" element={<LandingPage onAuthSuccess={handleAuthSuccess} />} />
+            <Route path="/dashboard" element={<Navigate to="/" replace />} />
+            <Route path="*" element={<Navigate to="/" replace />} />
           </>
         )}
       </Routes>

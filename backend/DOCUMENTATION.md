@@ -176,7 +176,7 @@ create_access_token(data: dict, expires_delta: timedelta) -> str
 ```python
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login")
 
-def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
+def get_current_token_data(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
     # Decodifica o JWT, busca o usuário no banco e retorna
     return User
 ```
