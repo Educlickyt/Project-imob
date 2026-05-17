@@ -28,6 +28,8 @@ class RoleRepository:
     
         return db_role
     
+    def get_admin_role(self):
+        return self.db.query(Role).filter(Role.name == 'admin', Role.tenant_id == None).first()
+    
     def get_by_name(self, name: str, tenant_id: str):
-        from uuid import UUID 
-        return self.db.query(Role).filter(Role.name == name and Role.tenant_id == UUID(tenant_id)).first()
+        return self.db.query(Role).filter(Role.name == name, Role.tenant_id == tenant_id).first()

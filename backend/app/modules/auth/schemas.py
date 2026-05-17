@@ -24,6 +24,7 @@ class UserCreate(BaseModel):
     phone: str
     is_active: bool = Field(default=True)
 
+
 class RegisterRequest(UserCreate):
     tenant_name: str
     tenant_slug: str | None = None

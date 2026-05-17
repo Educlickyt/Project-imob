@@ -1,5 +1,6 @@
 from fastapi import HTTPException, status
 from app.modules.users.repository import UserRepository
+from app.modules.roles.repository import RoleRepository
 from app.modules.tenants.repository import TenantRepository
 from app.modules.auth.schemas import RegisterRequest, UserResponse, TenantResponse
 from app.core.security import create_access_token, verify_password
@@ -10,6 +11,7 @@ class AuthService:
     def __init__(self, db):
         self.user_repo = UserRepository(db)
         self.tenant_repo = TenantRepository(db)
+        self.role_repo = RoleRepository(db)
  
     def register_tenant(self, user_in: RegisterRequest):
         user_exists = self.user_repo.get_by_email(user_in.email)
@@ -44,14 +46,22 @@ class AuthService:
         user_data.pop('tenant_slug', None)
         user_data['tenant_id'] = db_tenant.id
         
+        
         db_user = self.user_repo.create(user_data)
+        
+        admin_role = self.role_repo.get_admin_role()
+                
+        self.user_repo.link_user_to_role(db_user.id, admin_role.id)
+        
+        permissions = self.user_repo.get_user_permissions_keys(db_user.id)
+                
         
         access_token = create_access_token(
             data={
                     "sub": str(db_user.id),
                     "tenant_id": str(db_tenant.id),
-                    # "roles": list(),
-                    # "permissions": list()
+                    "roles": [admin_role.name],
+                    "permissions": permissions
                   }
         )
         

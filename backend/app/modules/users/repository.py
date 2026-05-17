@@ -44,14 +44,30 @@ class UserRepository:
         
         return list(result.scalars().all())
 
+    def link_user_to_role(self, user_id: str, role_id: str):
+        db_user_role = UserRole(user_id=user_id, role_id=role_id)
+        self.db.add(db_user_role)
+        self.db.commit()
+        self.db.refresh(db_user_role)
+        return db_user_role
+    
 
     def create(self, user_data: dict):    
         
         if "password" in user_data:
             user_data["password_hash"] = get_password_hash(user_data.pop("password"))
         
+        roles = []
+        if "roles" in user_data:
+            roles = user_data.pop("roles")
+        
         db_user = User(**user_data)
         self.db.add(db_user)
         self.db.commit()
         self.db.refresh(db_user)
+        
+        if roles:
+            for role in roles:
+                self.link_user_to_role(db_user.id, role)
+        
         return db_user

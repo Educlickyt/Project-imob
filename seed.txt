@@ -1,0 +1,2 @@
+INSERT INTO roles (id, tenant_id, name, description, created_at, updated_at) VALUES ('116daf4c-5cf3-4c85-9f9d-77aaedfbcaf9', NULL, 'admin','Possui todas as permissões do sistema.', now(), now());
+
