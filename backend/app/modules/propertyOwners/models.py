@@ -27,13 +27,13 @@ class PropertyOwner(Base):
         nullable=False
     )
 
-    email: Mapped[str] = mapped_column(String)
+    email: Mapped[str] = mapped_column(String, nullable=True)
 
-    phone: Mapped[str] = mapped_column(String)
+    phone: Mapped[str] = mapped_column(String, nullable=True)
 
-    document: Mapped[str] = mapped_column(String)
+    document: Mapped[str] = mapped_column(String, nullable=True)
 
-    notes: Mapped[str] = mapped_column(Text)
+    notes: Mapped[str] = mapped_column(Text, nullable=True)
     
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),

@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from app.modules.users.schemas import UserCreate, UserResponse
 from app.modules.users.service import UserService
-from app.core.security import get_current_token_data
+from app.modules.auth.dependencies import get_current_token_data
 from app.modules.auth.schemas import TokenPayload
 
 from sqlalchemy.orm import Session

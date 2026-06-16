@@ -1,10 +1,14 @@
 from fastapi import HTTPException, status
+from fastapi.responses import JSONResponse
+from fastapi.encoders import jsonable_encoder
 from app.modules.users.repository import UserRepository
 from app.modules.roles.repository import RoleRepository
 from app.modules.tenants.repository import TenantRepository
+from app.modules.auth.repository import AuthRepository
 from app.modules.auth.schemas import RegisterRequest, UserResponse, TenantResponse
-from app.core.security import create_access_token, verify_password
-from datetime import timedelta
+from app.core.security import create_access_token, verify_password, create_refresh_token_string
+from datetime import timedelta, timezone, datetime
+
 
 class AuthService:
      
@@ -12,6 +16,7 @@ class AuthService:
         self.user_repo = UserRepository(db)
         self.tenant_repo = TenantRepository(db)
         self.role_repo = RoleRepository(db)
+        self.auth_repo = AuthRepository(db)
  
     def register_tenant(self, user_in: RegisterRequest):
         user_exists = self.user_repo.get_by_email(user_in.email)
@@ -65,12 +70,28 @@ class AuthService:
                   }
         )
         
-        return {
+        token_str = create_refresh_token_string()
+        expires_at = datetime.now(timezone.utc) + timedelta(days=7)
+
+        self.auth_repo.save_refresh_token(db_user.id, token_str, expires_at)
+
+        response = JSONResponse(content=jsonable_encoder({
             "user": UserResponse.model_validate(db_user),
             "tenant": TenantResponse.model_validate(db_tenant),
             "access_token": access_token,
             "token_type": "bearer"
-        }
+        }))
+        
+        response.set_cookie(
+            key="refresh_token",
+            value=token_str,
+            httponly=True,   
+            secure=True,       
+            samesite="lax",   
+            expires=expires_at
+        )
+        
+        return response
     
     def _generate_slug(self, name: str) -> str:
         import re
@@ -99,7 +120,7 @@ class AuthService:
         if not user.is_active:
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
-                detail="Seu acesso foi bloqueada",
+                detail="Seu acesso foi bloqueado",
                 headers={"WWW-Authenticate": "Bearer"},
             )
         
@@ -123,5 +144,122 @@ class AuthService:
             }
         )
         
-        return {"access_token": access_token, "token_type": "bearer"}
+        token_str = create_refresh_token_string()
+        expires_at = datetime.now(timezone.utc) + timedelta(days=7)
+
+        self.auth_repo.save_refresh_token(user.id, token_str, expires_at)
+
+        response = JSONResponse(content={
+            "access_token": access_token,
+            "token_type": "bearer"
+        })
         
+        response.set_cookie(
+            key="refresh_token",
+            value=token_str,
+            httponly=True,   
+            secure=True,       
+            samesite="lax",   
+            expires=expires_at
+        )
+        
+        
+        return response
+        
+    def refresh_access_token(self, token_str: str):
+        
+        if not token_str:
+            raise HTTPException(status_code=401, detail="Refresh token ausente.")
+
+        
+        db_token = self.auth_repo.get_refresh_token(token_str)
+                
+        if not db_token or db_token.is_expired:
+            response = JSONResponse(
+                status_code=401,
+                content={"detail": "Refresh token inválido ou expirado."}
+            )
+            response.delete_cookie(key="refresh_token")
+            return response
+
+        user = self.user_repo.get_by_id(db_token.user_id) 
+        
+        if not user.is_active:
+            response = JSONResponse(
+                status_code=401,
+                content={"detail": "Sua conta foi suspensa"}
+            ) 
+            response.delete_cookie(key="refresh_token")
+            return response
+
+        roles = self.user_repo.get_user_roles(user.id)
+        permissions = self.user_repo.get_user_permissions_keys(user.id)
+
+        new_access_token = create_access_token(data={
+            "sub": str(user.id),
+            "tenant_id": str(user.tenant_id),
+            "roles": roles,
+            "permissions": permissions
+        })
+        
+        response = JSONResponse(content={
+            "access_token": new_access_token,
+            "token_type": "bearer"
+        })
+
+        new_refresh_token = create_refresh_token_string()
+        refresh_token_exp = datetime.now(timezone.utc) + timedelta(days=7)
+        
+        self.auth_repo.rotate_refresh_token(db_token, new_refresh_token, refresh_token_exp)
+        
+        response.set_cookie(
+            key="refresh_token",
+            value= new_refresh_token,
+            httponly=True,
+            secure=True,
+            samesite="lax",
+            expires= refresh_token_exp
+        )
+        
+        return response
+    
+    def logout_user(self, token_str):
+        
+        refresh_token = self.auth_repo.get_refresh_token(token_str)
+        
+        if not refresh_token:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Não foi possível encontrar o refresh token"
+            )
+        
+        self.auth_repo.delete_refresh_token(refresh_token)
+        
+        response = JSONResponse(
+                status_code=204,
+                content={}
+            )
+        response.delete_cookie(key="refresh_token")
+        
+        return response
+    
+    def logout_all_user(self, token_str):
+        
+        refresh_token = self.auth_repo.get_refresh_token(token_str)
+        
+        if not refresh_token:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Não foi possível encontrar o refresh token"
+            )
+        
+        self.auth_repo.delete_all_user_tokens(refresh_token.user_id)
+        
+        response = JSONResponse(
+                status_code=200,
+                content={"detail": "Todos os dispositivos foram deslogados"}
+            )
+        
+        response.delete_cookie(key="refresh_token")
+        
+        return response

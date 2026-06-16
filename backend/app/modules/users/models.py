@@ -56,8 +56,7 @@ class User(Base):
         DateTime(timezone=True),
         nullable=True
     )
-    
-    
+        
     
 class UserRole(Base):
     __tablename__ = "user_roles"

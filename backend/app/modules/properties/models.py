@@ -6,6 +6,7 @@ from sqlalchemy.orm import Mapped, mapped_column
 
 from datetime import datetime, timezone
 
+from app.modules.propertyOwners.models import PropertyOwner  
 from app.core.database import Base
 
 class Property(Base):
@@ -28,7 +29,8 @@ class Property(Base):
     )
 
     owner_id: Mapped[uuid.UUID] = mapped_column(
-        ForeignKey("property_owners.id")
+        ForeignKey("property_owners.id"),
+        nullable=True
     )
 
     title: Mapped[str] = mapped_column(
@@ -42,53 +44,60 @@ class Property(Base):
         nullable=False
     )
 
-    description: Mapped[str] = mapped_column(Text)
+    description: Mapped[str] = mapped_column(Text, nullable=True)
 
-    property_type: Mapped[str] = mapped_column(String)
+    property_type: Mapped[str] = mapped_column(String, nullable=True)
 
-    transaction_type: Mapped[str] = mapped_column(String)
+    transaction_type: Mapped[str] = mapped_column(String, nullable=True)
 
     status: Mapped[str] = mapped_column(String)
 
     publication_status: Mapped[str] = mapped_column(String, default="inactive")
-    
+
     price_sale: Mapped[float] = mapped_column(
-        Numeric(12, 2)
+        Numeric(12, 2),
+        nullable=True
     )
 
     price_rent: Mapped[float] = mapped_column(
-        Numeric(12, 2)
+        Numeric(12, 2),
+        nullable=True
     )
 
     condominium_fee: Mapped[float] = mapped_column(
-        Numeric(12, 2)
+        Numeric(12, 2),
+        nullable=True
     )
 
     iptu: Mapped[float] = mapped_column(
-        Numeric(12, 2)
+        Numeric(12, 2),
+        nullable=True
     )
 
-    iptu_type: Mapped[str] = mapped_column(String)
+    iptu_type: Mapped[str] = mapped_column(String, nullable=True)
     
-    bedrooms: Mapped[int] = mapped_column(Integer)
+    bedrooms: Mapped[int] = mapped_column(Integer, nullable=True)
 
-    bathrooms: Mapped[int] = mapped_column(Integer)
+    bathrooms: Mapped[int] = mapped_column(Integer,nullable=True)
 
-    garage_spots: Mapped[int] = mapped_column(Integer)
+    garage_spots: Mapped[int] = mapped_column(Integer, nullable=True)
 
     area: Mapped[float] = mapped_column(
-        Numeric(10, 2)
+        Numeric(10, 2),
+        nullable=True
     )
 
-    address: Mapped[str] = mapped_column(String)
+    address: Mapped[str] = mapped_column(String,nullable=True)
 
-    district: Mapped[str] = mapped_column(String)
+    district: Mapped[str] = mapped_column(String,nullable=True)
 
-    city: Mapped[str] = mapped_column(String)
+    city: Mapped[str] = mapped_column(String, nullable=True)
 
-    state: Mapped[str] = mapped_column(String)
+    state: Mapped[str] = mapped_column(String, nullable=True)
 
-    zip_code: Mapped[str] = mapped_column(String)
+    zip_code: Mapped[str] = mapped_column(String, nullable=True)
+
+
 
     views_count: Mapped[int] = mapped_column(
         Integer,

@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Request
 from app.modules.auth.schemas import RegisterRequest, LoginRequest, Token
 from app.modules.auth.service import AuthService
 
@@ -17,3 +17,24 @@ def login(user_credentials: LoginRequest, db: Session = Depends(get_db)):
 def register(user_data: RegisterRequest, db: Session = Depends(get_db)):
     auth_service = AuthService(db)
     return auth_service.register_tenant(user_data)
+
+@router.post("/refresh")
+def refresh_token(request: Request, db: Session = Depends(get_db)):
+    token_str = request.cookies.get("refresh_token")
+    
+    auth_service = AuthService(db)
+    return auth_service.refresh_access_token(token_str)
+
+@router.post("/logout")
+def logout(request: Request, db: Session = Depends(get_db)):
+    refresh_token = request.cookies.get("refresh_token")
+    
+    auth_service = AuthService(db)
+    return auth_service.logout_user(refresh_token)
+
+@router.post("/logout/all")
+def logout_all(request: Request, db: Session = Depends(get_db)):
+    refresh_token = request.cookies.get("refresh_token")
+    
+    auth_service = AuthService(db)
+    return auth_service.logout_all_user(refresh_token)

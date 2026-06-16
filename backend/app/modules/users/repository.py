@@ -13,8 +13,7 @@ class UserRepository:
         return self.db.query(User).filter(User.email == email).first()
         
     def get_by_id(self, id: str):
-        from uuid import UUID
-        return self.db.query(User).filter(User.id == UUID(id)).first()
+        return self.db.query(User).filter(User.id == id).first()
     
     def get_user_roles(self, user_id: str):
        

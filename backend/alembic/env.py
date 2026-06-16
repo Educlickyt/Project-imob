@@ -32,6 +32,7 @@ from app.modules.users.models import UserRole
 from app.modules.roles.models import Permission
 from app.modules.roles.models import RolePermission
 from app.modules.webhooks.models import Webhook
+from app.modules.auth.models import UserRefreshToken
 
 # from app.modules.tenants.models import Tenant
 

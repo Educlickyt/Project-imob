@@ -5,7 +5,7 @@ class RoleRepository:
     def __init__(self, db):
         self.db = db
         
-    def create(self, role_data: dict):
+    def create(self, role_data: dict):  
         
         db_role = Role(
             name = role_data['name'],
