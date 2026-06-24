@@ -11,3 +11,5 @@ argon2-cffi
 python-jose
 python-multipart
 email-validator
+boto3
+Pillow

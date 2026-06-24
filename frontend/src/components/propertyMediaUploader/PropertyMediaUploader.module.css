@@ -1,0 +1,113 @@
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 24px;
+}
+
+.title {
+  font-size: 1.5rem;
+  margin-bottom: 16px;
+}
+
+.error {
+  color: var(--accent, #BD0D24);
+  margin-bottom: 12px;
+}
+
+.selector {
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.selector select {
+  flex: 1;
+  padding: 8px 12px;
+  border: 1px solid var(--border, #ccc);
+  border-radius: 5px;
+  font-size: 14px;
+}
+
+.uploadArea {
+  margin-bottom: 20px;
+}
+
+.fileInput {
+  display: none;
+}
+
+.fileLabel {
+  display: inline-block;
+  padding: 10px 20px;
+  background-color: var(--accent, #BD0D24);
+  color: white;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.fileLabel:active {
+  opacity: 0.8;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 16px;
+}
+
+.card {
+  border: 1px solid var(--border, #ccc);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.image {
+  width: 100%;
+  height: 160px;
+  object-fit: cover;
+  display: block;
+}
+
+.actions {
+  display: flex;
+  gap: 8px;
+  padding: 8px;
+}
+
+.coverBtn,
+.deleteBtn {
+  flex: 1;
+  padding: 6px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.coverBtn {
+  background-color: #e0e0e0;
+  color: #333;
+}
+
+.deleteBtn {
+  background-color: var(--accent, #BD0D24);
+  color: white;
+}
+
+.coverBadge {
+  flex: 1;
+  text-align: center;
+  padding: 6px;
+  background-color: #4CAF50;
+  color: white;
+  border-radius: 4px;
+  font-size: 12px;
+}
+
+.empty {
+  text-align: center;
+  color: #888;
+  margin-top: 24px;
+}
