@@ -1,7 +1,18 @@
 from pydantic import BaseModel, Field
 from uuid import UUID
-from typing import List
+from typing import List, Optional
 from datetime import datetime
+
+
+class PropertyMediaResponse(BaseModel):
+    id: UUID
+    property_id: UUID
+    url: str
+    type: str
+    position: int
+    is_cover: bool
+    created_at: datetime
+    model_config = {"from_attributes": True}
 
 
 class PropertyResponse(BaseModel):
@@ -29,18 +40,23 @@ class PropertyResponse(BaseModel):
     state: str | None = None
     zip_code: str | None = None
 
+    status: str | None = None
+    publication_status: str | None = None
+    
+    medias: List[PropertyMediaResponse] = []
+    
+    deleted_at: datetime | None = None
+    
     created_at: datetime
     updated_at: datetime
     model_config = {"from_attributes": True}
     
 class PropertyCreate(BaseModel):
-    tenant_id: UUID = Field(default='6c7749f7-10d2-4ac4-809d-a2a659e3bf59') #teste
-    user_id: UUID = Field(default='981d7a76-316f-42a9-a5bd-e7cee1119471') #teste
+    user_id: UUID = Field(default='981d7a76-316f-42a9-a5bd-e7cee1119471') #Deve ser o id de um usuario do tenant
     owner_id: UUID | None = None
     title: str
-    slug: str | None = None
     description: str | None = None
-    property_type: str | None = None
+    property_type: str
     transaction_type: str | None = None
     price_sale: float | None = None
     price_rent: float | None = None
@@ -58,14 +74,10 @@ class PropertyCreate(BaseModel):
     zip_code: str | None = None
     
 class PropertyUpdate(BaseModel):
-    id: UUID = Field(...)
-    tenant_id: UUID | None = None
     user_id: UUID | None = None
     owner_id: UUID | None = None
-    title: str
-    slug: str | None = None
+    title: str | None = None
     description: str | None = None
-    property_type: str | None = None
     transaction_type: str | None = None
     price_sale: float | None = None
     price_rent: float | None = None
@@ -81,4 +93,5 @@ class PropertyUpdate(BaseModel):
     city: str | None = None
     state: str | None = None
     zip_code: str | None = None
+    publication_status: str | None = None
     

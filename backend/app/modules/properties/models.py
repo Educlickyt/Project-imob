@@ -1,8 +1,8 @@
 import uuid
 
-from sqlalchemy import String, Text, Integer, Boolean, Numeric, DateTime, ForeignKey
+from sqlalchemy import String, Text, Integer, Boolean, Numeric, DateTime, ForeignKey, UniqueConstraint
 from sqlalchemy.dialects.postgresql import UUID
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from datetime import datetime, timezone
 
@@ -11,6 +11,9 @@ from app.core.database import Base
 
 class Property(Base):
     __tablename__ = "properties"
+    __table_args__ = (
+        UniqueConstraint("tenant_id", "slug", name="uq_properties_tenant_slug"),
+    )
 
     id: Mapped[uuid.UUID] = mapped_column(
         UUID(as_uuid=True),
@@ -40,7 +43,6 @@ class Property(Base):
 
     slug: Mapped[str] = mapped_column(
         String,
-        unique=True,
         nullable=False
     )
 
@@ -118,6 +120,13 @@ class Property(Base):
         nullable=True
     )
 
+    medias: Mapped[list["PropertyMedia"]] = relationship(
+        "PropertyMedia",
+        back_populates="property",
+        order_by="PropertyMedia.position",
+        cascade="all, delete-orphan",
+    )
+
 class PropertyMedia(Base):
     __tablename__ = "property_medias"
 
@@ -130,6 +139,11 @@ class PropertyMedia(Base):
     property_id: Mapped[uuid.UUID] = mapped_column(
         ForeignKey("properties.id"),
         nullable=False
+    )
+
+    property: Mapped["Property"] = relationship(
+        "Property",
+        back_populates="medias",
     )
 
     url: Mapped[str] = mapped_column(
@@ -149,5 +163,26 @@ class PropertyMedia(Base):
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
         default=lambda: datetime.now(timezone.utc)
+    )
+
+
+class PropertySequence(Base):
+    __tablename__ = "property_sequences"
+
+    tenant_id: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True),
+        ForeignKey("tenants.id"),
+        primary_key=True,
+    )
+
+    property_type: Mapped[str] = mapped_column(
+        String,
+        primary_key=True,
+    )
+
+    last_sequence: Mapped[int] = mapped_column(
+        Integer,
+        default=0,
+        nullable=False,
     )
     
