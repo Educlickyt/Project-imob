@@ -6,7 +6,7 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from datetime import datetime, timezone
 
-from app.modules.propertyOwners.models import PropertyOwner  
+# from app.modules.propertyOwners.models import PropertyOwner  
 from app.core.database import Base
 
 class Property(Base):

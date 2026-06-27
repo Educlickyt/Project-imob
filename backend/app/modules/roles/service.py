@@ -14,7 +14,7 @@ class RoleService:
         role_exists = self.role_repo.get_by_name(role_in.name, tenant_id)
         
         if role_exists:
-            raise HTTPException(
+            raise HTTPException(    
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail="Essa role já existe"
             )
