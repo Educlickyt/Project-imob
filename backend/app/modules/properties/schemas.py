@@ -1,6 +1,6 @@
 from pydantic import BaseModel, Field
 from uuid import UUID
-from typing import List, Optional
+from typing import List
 from datetime import datetime
 
 
@@ -52,7 +52,7 @@ class PropertyResponse(BaseModel):
     model_config = {"from_attributes": True}
     
 class PropertyCreate(BaseModel):
-    user_id: UUID = Field(default='981d7a76-316f-42a9-a5bd-e7cee1119471') #Deve ser o id de um usuario do tenant
+    user_id: UUID = Field(...) 
     owner_id: UUID | None = None
     title: str
     description: str | None = None
