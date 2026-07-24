@@ -13,3 +13,7 @@ python-multipart
 email-validator
 boto3
 Pillow
+arq>=0.26
+redis[hiredis]>=5.0
+aiosmtplib>=3.0
+httpx>=0.27

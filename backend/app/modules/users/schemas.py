@@ -20,3 +20,11 @@ class UserResponse(BaseModel):
 
     class Config:
         from_attributes = True
+        
+
+class UserUpdate(BaseModel):
+    email: EmailStr | None = None
+    name: str | None = None
+    phone: str | None = None
+    roles: List[UUID] | None = None
+    is_active: bool | None = None

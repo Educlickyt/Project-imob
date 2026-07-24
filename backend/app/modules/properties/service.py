@@ -33,10 +33,10 @@ class PropertyService:
         return self._get_property_or_404(property_id, current_user.tenant_id)
 
     def create_property(self, property_in: PropertyCreate, current_user: TokenPayload):
-        user = self.user_repo.get_by_id(str(property_in.user_id))
-        if not user or user.tenant_id != current_user.tenant_id:
+        user = self.user_repo.get_by_id(str(property_in.user_id), current_user.tenant_id)
+        if not user:
             raise HTTPException(
-                status_code=422, detail="User not found in your tenant"
+                status_code=422, detail="User not found."
             )
 
         property_data = property_in.model_dump()
@@ -62,10 +62,10 @@ class PropertyService:
                 raise HTTPException(
                     status_code=422, detail="user_id cannot be null"
                 )
-            user = self.user_repo.get_by_id(str(update_data["user_id"]))
-            if not user or user.tenant_id != current_user.tenant_id:
+            user = self.user_repo.get_by_id(str(update_data["user_id"]), current_user.tenant_id)
+            if not user:
                 raise HTTPException(
-                    status_code=422, detail="User not found in your tenant"
+                    status_code=422, detail="User not found."
                 )
 
         if not update_data:

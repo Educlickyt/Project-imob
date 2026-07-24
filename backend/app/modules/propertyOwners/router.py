@@ -19,7 +19,7 @@ def list(db: Session = Depends(get_db), current_user: TokenPayload = Depends(Per
 @router.get('/{propertyOwner_id}')
 def get(propertyOwner_id: UUID, db: Session = Depends(get_db), current_user: TokenPayload = Depends(PermissionChecker("propertyOwners:view"))):
     service = PropertyOwnerService(db)
-    return service.get_by_id(propertyOwner_id, current_user)
+    return service.get_by_id(propertyOwner_id, current_user.tenant_id)
 
 @router.post('/create', response_model=PropertyOwnerResponse)
 def create(propertyOwner_data: PropertyOwnerCreate, db: Session = Depends(get_db), current_user: TokenPayload = Depends(PermissionChecker("propertyOwners:create"))):

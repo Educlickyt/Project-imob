@@ -21,7 +21,7 @@ class PropertyRepository:
             Property.deleted_at.is_(None),
         )
         if property_id:
-            return query.filter(Property.id == property_id).first()
+            return query.filter(Property.id == property_id, Property.deleted_at.is_(None), Property.tenant_id == tenant_id).first()
         return query.all()
 
     def get_by_id(self, property_id: UUID) -> Property | None:

@@ -27,7 +27,8 @@ class Client(Base):
     )
 
     created_from_lead_id: Mapped[uuid.UUID] = mapped_column(
-        ForeignKey("leads.id")
+        ForeignKey("leads.id"),
+        nullable=True
     )
 
     name: Mapped[str] = mapped_column(String)

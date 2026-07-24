@@ -18,6 +18,26 @@ services:
       timeout: 5s
       retries: 3
 
+  redis:
+    image: redis:7-alpine
+    container_name: redis_queue
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+
+  mailhog:
+    image: mailhog/mailhog:latest
+    container_name: mailhog
+    ports:
+      - "1025:1025"   # SMTP
+      - "8025:8025"   # UI web
+    profiles: ["dev"]
+
   backend:
     build: ./backend
     container_name: fastapi_backend
@@ -31,6 +51,21 @@ services:
     depends_on:
       - database
       - minio
+      - redis
+  
+  worker:
+    build: ./backend
+    container_name: arq_worker
+    command: arq app.workers.arq_settings.WorkerSettings
+    volumes:
+      - ./backend:/app
+    depends_on:
+      - database
+      - minio
+      - redis
+    environment:
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
 
   frontend:
     build: ./frontend
@@ -63,3 +98,4 @@ services:
 volumes:
   postgres_data:
   minio_data:
+  redis_data:

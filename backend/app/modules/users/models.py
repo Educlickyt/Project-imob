@@ -60,15 +60,21 @@ class User(Base):
     
 class UserRole(Base):
     __tablename__ = "user_roles"
+    
+    id: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True),
+        primary_key=True,
+        default=uuid.uuid4
+    )
 
     user_id: Mapped[uuid.UUID] = mapped_column(
         ForeignKey("users.id"),
-        primary_key=True
+        nullable=False
     )
 
     role_id: Mapped[uuid.UUID] = mapped_column(
         ForeignKey("roles.id"),
-        primary_key=True
+        nullable=False
     )
 
     created_at: Mapped[datetime] = mapped_column(

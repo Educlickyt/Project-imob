@@ -1,12 +1,13 @@
 import uuid
 
 from sqlalchemy import String, Text, DateTime, ForeignKey
-from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy.dialects.postgresql import UUID, JSON
 from sqlalchemy.orm import Mapped, mapped_column
 
 from datetime import datetime, timezone
 
 from app.core.database import Base
+
 
 class Lead(Base):
     __tablename__ = "leads"
@@ -23,11 +24,13 @@ class Lead(Base):
     )
 
     user_id: Mapped[uuid.UUID] = mapped_column(
-        ForeignKey("users.id")
+        ForeignKey("users.id"),
+        nullable=True
     )
 
     property_id: Mapped[uuid.UUID] = mapped_column(
-        ForeignKey("properties.id")
+        ForeignKey("properties.id"),
+        nullable=True
     )
 
     name: Mapped[str] = mapped_column(String)
@@ -36,7 +39,7 @@ class Lead(Base):
 
     phone: Mapped[str] = mapped_column(String)
 
-    message: Mapped[str] = mapped_column(Text)
+    message: Mapped[str] = mapped_column(Text, default="")
 
     status: Mapped[str] = mapped_column(
         String,
@@ -44,6 +47,12 @@ class Lead(Base):
     )
 
     source: Mapped[str] = mapped_column(String)
+
+    raw_data: Mapped[dict | None] = mapped_column(
+        JSON,
+        default=dict,
+        nullable=True
+    )
 
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
