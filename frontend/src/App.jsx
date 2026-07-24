@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom"
 import './App.css'
 
 import LandingPage from './pages/LandingPage'
+import TestLandingPage from './pages/TestLandingPage'
 import Dashboard from './pages/Dashboard'
 
 function App() {
@@ -46,6 +47,7 @@ function App() {
         ) : (
           <>
             <Route path="/" element={<LandingPage onAuthSuccess={handleAuthSuccess} />} />
+            <Route path="/teste" element={<TestLandingPage />} />
             <Route path="/dashboard" element={<Navigate to="/" replace />} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </>

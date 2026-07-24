@@ -184,10 +184,18 @@ class AuthService:
 
         user = self.user_repo.get_by_id(db_token.user_id) 
         
+        if not user:
+            response = JSONResponse(
+                status_code=401,
+                content={"detail": "Sua conta foi desativada."}
+            ) 
+            response.delete_cookie(key="refresh_token")
+            return response
+        
         if not user.is_active:
             response = JSONResponse(
                 status_code=401,
-                content={"detail": "Sua conta foi suspensa"}
+                content={"detail": "Sua conta foi suspensa."}
             ) 
             response.delete_cookie(key="refresh_token")
             return response

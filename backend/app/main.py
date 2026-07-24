@@ -10,6 +10,9 @@ from app.modules.users.router import router as users_router
 from app.modules.roles.router import router as roles_router
 from app.modules.properties.router import router as properties_router, media_router
 from app.modules.propertyOwners.router import router as propertyOwners_router
+from app.modules.leads.router import router as leads_router
+from app.modules.clients.router import router as clients_router
+from app.modules.dashboard.router import router as dashboard_router
 
 
 app.add_middleware(
@@ -26,6 +29,9 @@ app.include_router(roles_router)
 app.include_router(properties_router)
 app.include_router(media_router)
 app.include_router(propertyOwners_router)
+app.include_router(leads_router)
+app.include_router(clients_router)
+app.include_router(dashboard_router)
 
 def custom_openapi():
     if app.openapi_schema:
@@ -47,7 +53,7 @@ def custom_openapi():
     }
     
     # Aplicar segurança apenas às rotas que precisam de autenticação
-    protected_paths = ["/users/","/roles", "/properties", "/auth/logout", "/propertyOwners"]
+    protected_paths = ["/users/","/roles", "/properties", "/auth/logout", "/propertyOwners", "/leads", "/clients", "/dashboard"]
     
     for path in openapi_schema["paths"]:
         for method in openapi_schema["paths"][path]:
