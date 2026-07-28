@@ -78,7 +78,7 @@ class PropertyService:
         merged.update(update_data)
         update_data["status"] = self._check_status(merged)
         
-        if update_data["publication_status"] and update_data["publication_status"] != 'inactive':
+        if "publication_status" in update_data and update_data["publication_status"] != 'inactive':
             if update_data['status'] != 'registed': update_data.pop("publication_status", None)
 
         return self.property_repo.update_property(db_property, update_data)

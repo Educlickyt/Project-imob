@@ -5,3 +5,5 @@ from app.modules.properties.models import *
 from app.modules.propertyOwners.models import *
 from app.modules.leads.models import *
 from app.modules.clients.models import *
+from app.modules.apiKeys.models import *
+from app.modules.domains.models import *
