@@ -24,12 +24,17 @@ class ApiKey(Base):
 
     name: Mapped[str] = mapped_column(String)
 
+    key_prefix: Mapped[str] = mapped_column(String)
+    
     key_hash: Mapped[str] = mapped_column(
         String,
         nullable=False
     )
 
-    permissions: Mapped[str] = mapped_column(Text)
+    permissions: Mapped[str] = mapped_column(
+        Text, 
+        nullable=True
+    )
 
     is_active: Mapped[bool] = mapped_column(
         Boolean,
@@ -39,4 +44,9 @@ class ApiKey(Base):
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
         default=lambda: datetime.now(timezone.utc)
+    )
+    
+    expires_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        nullable=True
     )
