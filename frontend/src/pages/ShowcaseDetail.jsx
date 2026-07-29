@@ -119,7 +119,7 @@ export default function ShowcaseDetail() {
 
           <div className={styles.contactSection}>
             <h3>Entre em contato</h3>
-            <ContactForm propertyId={property.id} />
+            <ContactForm propertyId={property.id} slug={slug} />
           </div>
         </div>
       </div>
