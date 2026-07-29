@@ -45,7 +45,15 @@ class AuthService:
             "status": "active"
         }
         db_tenant = self.tenant_repo.create(tenant_data)
-        
+
+        from app.modules.showcaseConfigs.repository import ShowcaseConfigRepository
+        showcase_repo = ShowcaseConfigRepository(db)
+        showcase_repo.create({
+            "tenant_id": db_tenant.id,
+            "template": "classic",
+            "is_active": True,
+        })
+
         user_data = user_in.model_dump()
         user_data.pop('tenant_name', None)
         user_data.pop('tenant_slug', None)

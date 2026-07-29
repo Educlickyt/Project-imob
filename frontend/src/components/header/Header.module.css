@@ -27,7 +27,7 @@
 }
 .header a{
     text-decoration: none;
-    font-size: 22px;
+    font-size: 18px;
     font-weight: 300;
     display: flex;
     align-items: end;
@@ -36,14 +36,15 @@
 .header>nav button{
     background-color: var(--accent);
     border: none;
-    padding: 15px 10px;
-    height: 50px;
+    padding: 8px 10px;
+    /* height: 50px; */
     width: 95px;
     border-radius: 5px;
     font-weight: 300;
     color: aliceblue;
     cursor: pointer;
     transition: background-color 0.3s;
+    font-size: 20px;
 }
 
 .header>nav button:hover{

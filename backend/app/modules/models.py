@@ -7,3 +7,4 @@ from app.modules.leads.models import *
 from app.modules.clients.models import *
 from app.modules.apiKeys.models import *
 from app.modules.domains.models import *
+from app.modules.showcaseConfigs.models import *
