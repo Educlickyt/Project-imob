@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import styles from './contactForm.module.css';
+import publicApi from '../../services/publicApi';
 
-export default function ContactForm({ propertyId }) {
+export default function ContactForm({ propertyId, slug }) {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -9,15 +10,31 @@ export default function ContactForm({ propertyId }) {
     message: 'Olá! Tenho interesse neste imóvel.'
   });
   const [submitted, setSubmitted] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // TODO: enviar para /v1/{slug}/contact (Etapa 4)
-    setSubmitted(true);
+    setLoading(true)
+    try{
+      await publicApi.post(`/${slug}/contact`, {
+        name: formData.name,
+        email: formData.email,
+        phone: formData.phone,
+        message: formData.message,
+        property_id: propertyId
+      });
+      setSubmitted(true);
+    }catch(err){
+      setError(err.response?.data?.detail || "Erro ao enviar formulário. Tente novamente.");
+    }
+    finally{
+      setLoading(false)
+    }
   };
 
   if (submitted) {
@@ -26,6 +43,10 @@ export default function ContactForm({ propertyId }) {
         Mensagem enviada com sucesso!
       </div>
     );
+  }
+
+  if(error){
+    return <div className={styles.error}>{error}</div>;
   }
 
   return (
