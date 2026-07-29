@@ -38,11 +38,37 @@ class PublicService:
 
     def get_tenant_info(self, tenant_id):
         tenant = self.public_repo.get_tenant_by_id(tenant_id)
-        
+
         if not tenant:
             raise HTTPException(status_code=404, detail="Tenant not found")
-        
-        return tenant  
+
+        from app.modules.showcaseConfigs.service import ShowcaseConfigService
+        showcase_service = ShowcaseConfigService(self.public_repo.db)
+        showcase_config = showcase_service.get_config_for_public(tenant_id)
+
+        # Busca dados de contato do admin do tenant
+        from app.modules.users.models import User, UserRole
+        from app.modules.roles.models import Role
+
+        admin_user = (
+            self.public_repo.db.query(User)
+            .join(UserRole, UserRole.user_id == User.id)
+            .join(Role, Role.id == UserRole.role_id)
+            .filter(
+                User.tenant_id == tenant_id,
+                Role.name == "admin",
+                User.is_active == True,
+            )
+            .first()
+        )
+
+        return {
+            "name": tenant.name,
+            "slug": tenant.slug,
+            "phone": admin_user.phone if admin_user else None,
+            "email": admin_user.email if admin_user else None,
+            "showcase": showcase_config,
+        }  
 
     def create_contact(self, tenant_id, contact_in, request_data):
         if not contact_in.email:

@@ -16,29 +16,53 @@ from app.modules.clients.router import router as clients_router
 from app.modules.dashboard.router import router as dashboard_router
 from app.modules.apiKeys.router import router as apikeys_router
 from app.modules.domains.router import router as domains_router
+from app.modules.showcaseConfigs.router import router as showcaseConfigs_router
 from app.api.public.router import router as public_router
 
 
 class CustomCORSMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request: Request, call_next):
-        # Pega headers relevantes
         origin = request.headers.get("origin", "")
         api_key = request.headers.get("x-api-key", "")
-        
-        # Processa a requisição
-        response = await call_next(request)
-        
-        # Se tem API Key → permite qualquer origem
+
+        # Determina headers CORS com base na origem/tipo
+        allow_origin = None
+        allow_headers = None
+        allow_methods = None
+
         if api_key:
-            response.headers["Access-Control-Allow-Origin"] = "*"
-            response.headers["Access-Control-Allow-Headers"] = "X-API-Key, Content-Type, Authorization"
-            response.headers["Access-Control-Allow-Methods"] = "GET, POST, OPTIONS"
-        # Se é do frontend local → permite localhost (ERP)
+            allow_origin = "*"
+            allow_headers = "X-API-Key, Content-Type, Authorization"
+            allow_methods = "GET, POST, OPTIONS"
         elif origin in ["http://localhost:5173"]:
-            response.headers["Access-Control-Allow-Origin"] = origin
-            response.headers["Access-Control-Allow-Headers"] = "*"
-            response.headers["Access-Control-Allow-Methods"] = "*"
-        
+            allow_origin = origin
+            allow_headers = "*"
+            allow_methods = "*"
+
+        # Se é preflight OPTIONS → retorna 200 direto
+        if request.method == "OPTIONS" and allow_origin:
+            from starlette.responses import Response
+            return Response(
+                status_code=200,
+                headers={
+                    "Access-Control-Allow-Origin": allow_origin,
+                    "Access-Control-Allow-Headers": allow_headers,
+                    "Access-Control-Allow-Methods": allow_methods,
+                    "Access-Control-Max-Age": "86400",
+                },
+            )
+
+        try:
+            response = await call_next(request)
+        except Exception:
+            from starlette.responses import JSONResponse
+            response = JSONResponse(status_code=500, content={"detail": "Internal Server Error"})
+
+        if allow_origin:
+            response.headers["Access-Control-Allow-Origin"] = allow_origin
+            response.headers["Access-Control-Allow-Headers"] = allow_headers
+            response.headers["Access-Control-Allow-Methods"] = allow_methods
+
         return response
 
 app.add_middleware(CustomCORSMiddleware)
@@ -55,6 +79,7 @@ app.include_router(clients_router)
 app.include_router(dashboard_router)
 app.include_router(apikeys_router)
 app.include_router(domains_router)
+app.include_router(showcaseConfigs_router)
 app.include_router(public_router)
 
 def custom_openapi():

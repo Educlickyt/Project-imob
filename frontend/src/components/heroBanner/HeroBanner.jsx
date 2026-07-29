@@ -7,7 +7,7 @@ const HeroBanner = () => {
   return (
     <section className={Style.heroBanner}>
         <div>
-          <h1>Seu escritório imobiliário, onde quer que você esteja</h1>
+          <h1>Seu <b>escritório imobiliário</b>, onde quer que você esteja</h1>
           <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s</p>
           <div>
             <button>Ver Planos</button>

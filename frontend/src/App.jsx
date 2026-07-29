@@ -3,8 +3,9 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom"
 import './App.css'
 
 import LandingPage from './pages/LandingPage'
-import TestLandingPage from './pages/TestLandingPage'
 import Dashboard from './pages/Dashboard'
+import ShowcaseList from './pages/ShowcaseList'
+import ShowcaseDetail from './pages/ShowcaseDetail'
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -38,6 +39,10 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
+        {/* Rotas da vitrine - sempre acessíveis */}
+        <Route path="/v/:slug" element={<ShowcaseList />} />
+        <Route path="/v/:slug/:id" element={<ShowcaseDetail />} />
+
         {isAuthenticated ? (
           <>
             <Route path="/" element={<Navigate to="/dashboard" replace />} />
@@ -47,7 +52,6 @@ function App() {
         ) : (
           <>
             <Route path="/" element={<LandingPage onAuthSuccess={handleAuthSuccess} />} />
-            <Route path="/teste" element={<TestLandingPage />} />
             <Route path="/dashboard" element={<Navigate to="/" replace />} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </>

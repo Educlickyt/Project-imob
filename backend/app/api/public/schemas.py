@@ -56,10 +56,22 @@ class PropertyDetailResponse(PropertyPublicResponse):
     condominium_fee: float | None = None
 
 
+class ShowcasePublicInfo(BaseModel):
+    """Dados públicos da configuração de vitrine."""
+    template: str
+    primary_color: str | None = None
+    secondary_color: str | None = None
+
+
 class TenantInfoResponse(BaseModel):
     """Dados públicos do corretor."""
     name: str
     slug: str
+    slogan: str | None = None
+    logo: str | None = None
+    phone: str | None = None
+    email: str | None = None
+    showcase: ShowcasePublicInfo | None = None
 
 
 class ContactCreate(BaseModel):
