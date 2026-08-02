@@ -26,7 +26,7 @@ class ShowcaseConfig(Base):
 
     template: Mapped[str] = mapped_column(
         String,
-        default="classic"
+        default="default"
     )
 
     primary_color: Mapped[str] = mapped_column(

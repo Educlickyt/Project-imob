@@ -9,6 +9,7 @@
   --accent-bg: #F0F3F9;
   --border: #e5e4e7;
   --code-bg: #f4f3ec;
+  --secundary: #292D30;
   --accent: #BD0D24;
   /* --accent-border: rgba(170, 59, 255, 0.5); */
   --social-bg: rgba(244, 243, 236, 0.5);
@@ -34,7 +35,7 @@
   }
 }
 
-@media (prefers-color-scheme: dark) {
+/* @media (prefers-color-scheme: dark) {
   :root {
     --logo: url('Logo_dark.png');
     --text: #e2e6ec;
@@ -53,7 +54,7 @@
   #social .button-icon {
     filter: invert(1) brightness(2);
   }
-}
+} */
 body{
   margin: 0;
 }
