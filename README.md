@@ -227,19 +227,6 @@ O arquivo `.env` contém as configurações necessárias para os serviços utili
 
 ---
 
-# Testes
-
-Os testes do backend podem ser executados com:
-
-```bash
-cd backend
-pytest
-```
-
-A suíte contempla, conforme o módulo, testes unitários, de integração e end-to-end.
-
----
-
 # Roadmap
 
 ## Implementado
