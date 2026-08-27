@@ -4,6 +4,12 @@ import './App.css'
 
 import LandingPage from './pages/LandingPage'
 import Dashboard from './pages/Dashboard'
+import Properties from './pages/Properties'
+import Leads from './pages/Leads'
+import Clients from './pages/Clients'
+import PropertyOwners from './pages/PropertyOwners'
+import Collaborators from './pages/Collaborators'
+import Settings from './pages/Settings'
 import ShowcaseList from './pages/ShowcaseList'
 import ShowcaseDetail from './pages/ShowcaseDetail'
 
@@ -47,6 +53,12 @@ function App() {
           <>
             <Route path="/" element={<Navigate to="/dashboard" replace />} />
             <Route path="/dashboard" element={<Dashboard onLogout={handleLogout} />} />
+            <Route path="/properties" element={<Properties onLogout={handleLogout} />} />
+            <Route path="/leads" element={<Leads onLogout={handleLogout} />} />
+            <Route path="/clients" element={<Clients onLogout={handleLogout} />} />
+            <Route path="/property-owners" element={<PropertyOwners onLogout={handleLogout} />} />
+            <Route path="/tenant-users" element={<Collaborators onLogout={handleLogout} />} />
+            <Route path="/settings" element={<Settings onLogout={handleLogout} />} />
             <Route path="*" element={<Navigate to="/dashboard" replace />} />
           </>
         ) : (

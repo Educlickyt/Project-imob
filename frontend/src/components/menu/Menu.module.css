@@ -67,6 +67,7 @@
 .sidebar:hover ~ .bgFilter{
     display: block;
     opacity: 1;
+    z-index: 8;
     width: 100vw;
 }
 .sidebar:hover .logo>img:last-child{

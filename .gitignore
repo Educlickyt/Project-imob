@@ -1,0 +1,33 @@
+# Env
+.env
+backend/.env
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+backend/.venv/
+
+# Node
+node_modules/
+frontend/node_modules/
+dist/
+frontend/dist/
+
+# Editor / OS
+.vscode/
+.idea/
+.DS_Store
+
+# Local tooling / internal notes
+.opencode/
+.impeccable/
+AGENTS.md
+tasks.md
+PRODUCT.md
+
+# Design assets / internal documents
+Wireframe-landingPage.pdf
+WireFrame-LandingPage.png
